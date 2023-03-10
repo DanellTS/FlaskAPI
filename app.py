@@ -1,8 +1,15 @@
 from flask import Flask, jsonify
-from src.config import config
 import openai
 
 app=Flask(__name__)
+
+class DevelopmentConfig():
+        DEBUG = True
+        openai.api_key = 'API-KEY'
+    
+config = {
+    'development': DevelopmentConfig
+}
 
 messages = [
     {"role": "user", "content": "Hola"}
@@ -42,9 +49,11 @@ def getQuestion(userquestion):
         response = customError
         pass
     
-    messages.append({"role": "assistant", "content": response})
+    result = {"role": "assistant", "content": response}
     
-    return jsonify(response)
+    messages.append(result)
+    
+    return jsonify(result)
 
 @app.route('/messages', methods=['GET'])
 def getMessages():
